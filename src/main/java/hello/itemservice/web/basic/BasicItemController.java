@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import hello.itemservice.domain.Item;
 import hello.itemservice.domain.ItemRepository;
@@ -65,8 +67,57 @@ public class BasicItemController {
 	}
 
 	// 같은 URL(/basic/items/add)에 대해 HTTP Method로 기능을 구분한다.
+	//@PostMapping("/add")
+	// 요청 파라미터의 값은 입력 폼의 input 태그 중 name의 값을 기준으로 넘어온다.
+	// e.g. 다음 태그에서는 name의 값인 itemName을 기준으로 요청 값이 넘어온다.
+	// - <input type="text" id="itemName" name="itemName" class="form-control" value="상품A" th:value="${item.itemName}" readonly>
+	public String addItemV1(@RequestParam("itemName") String itemName,
+					   @RequestParam("price") Integer price,
+					   @RequestParam("quantity") Integer quantity,
+					   Model model){
+
+		Item item = new Item();
+		item.setItemName(itemName);
+		item.setPrice(price);
+		item.setQuantity(quantity);
+
+		// 상품 저장
+		itemRepository.save(item);
+
+		// 상품을 저장하고 나면, 상품 상세 정보 뷰를 재사용하여 그 결과를 보여준다.
+		model.addAttribute("item", item);
+		return "basic/item";
+	}
+
+	//@PostMapping("/add")
+	public String addItemV2(@ModelAttribute("item") Item item, Model model){
+		// ModelAttribute는 아래 코드(Item 객체를 생성하고 값을 세팅)를 그대로 대신 수행해준다.
+		// Item item = new Item();
+		// item.setItemName(itemName);
+		// item.setPrice(price);
+		// item.setQuantity(quantity);
+
+		itemRepository.save(item);
+
+		// ModelAttribute는 model 객체에 값을 넣어주는 로직(addAttribute() 메서드 호출)도 대신 수행해준다.
+		// 이때, 컬렉션의 key 값은 @ModelAttribute 선언시 지정한 값(이 경우에선 "item")으로 지정된다.
+		// model.addAttribute("item", item);
+		return "basic/item";
+	}
+
 	@PostMapping("/add")
-	public String save(){
-		return "basic/addForm";
+	public String addItemV3(@ModelAttribute Item item, Model model){
+		// ModelAttribute는 아래 코드(Item 객체를 생성하고 값을 세팅)를 그대로 대신 수행해준다.
+		// Item item = new Item();
+		// item.setItemName(itemName);
+		// item.setPrice(price);
+		// item.setQuantity(quantity);
+
+		itemRepository.save(item);
+
+		// ModelAttribute는 model 객체에 값을 넣어주는 로직(addAttribute() 메서드 호출)도 대신 수행해준다.
+		// 이때, 컬렉션의 key 값은 @ModelAttribute 선언시 지정한 값(이 경우에선 "item")으로 지정된다.
+		// model.addAttribute("item", item);
+		return "basic/item";
 	}
 }
