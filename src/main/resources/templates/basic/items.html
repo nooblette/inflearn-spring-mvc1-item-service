@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"> <!--xmlns:th="" : 타임리프(Thymeleaf) 사용시 선언-->
+<head>
+    <meta charset="utf-8">
+    <!-- th:href="@{}" : 절대 경로로 css를 가져온다.-->
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container" style="  max-width: 600px">
+    <div class="py-5 text-center">
+        <h2>상품 목록</h2></div>
+    <div class="row">
+        <div class="col">
+            <!--
+            서버 없이 타임리프로 작성된 html을 파일을 열면 th:가 포함된 태그는 무시된다(웹 브라우저는 th:가 어떤 정보인지 모른다), 이 경우 th:onclick이 아닌 onclick=""이 호출된다.
+            즉 JSP와 같은 다른 뷰 템플릿과 달리, 타임리프는 순수 html 코드와 동일하게 동작한다.(html 모양을 그대로 살리면서 렌더링 될때만 동적인 값이 필요한 부분을 치환)
+            이러한 특성으로 타임리프를 내추럴 템플릿 엔진으로 부른다.
+            -->
+            <button class="btn btn-primary float-end" onclick="location.href='addForm.html'"
+                    th:onclick="|location.href='@{/basic/items/add}'|"
+                    type="button">상품 등록</button>
+        </div>
+    </div>
+    <hr class="my-4">
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>상품명</th>
+                <th>가격</th>
+                <th>수량</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}"> <!-- ${items} : 모델(model)에서 key가 'items'에 해당하는 value 들을 꺼내어 변수(e.g. item)에 할당한다.-->
+                <!-- ${item.id} : 프로퍼티(property) 접근법, item의 getId()를 호출하여 id 값을 가져온다.-->
+                <!-- ${itemId}(itemId=${item.id}) : item의 getId를 호출한 값을 itemId에 할당한다.-->
+                <td><a href="item.html" th:href="@{/basic/items/{itemId}(itemId=${item.id})}" th:text="${item.id}">회원id</a></td>
+
+                <!-- th:href="@{경로}" : 랜더링이 되면 a href="item.html"를(정적일때 호출) th:href="@{경로}"로 치환한다, @ : url, link를 연결할때 사용하는 문법-->
+                <td><a href="item.html" th:href="@{/basic/items/{itemId}(itemId=${item.id})}" th:text="${item.itemName}">상품명</a></td>
+                <td th:text="${item.price}">10000</td>
+                <td th:text="${item.quantity}">10</td>
+            </tr>
+            <tr>
+            </tbody>
+        </table>
+    </div>
+</div> <!-- /container -->
+</body>
+</html>
