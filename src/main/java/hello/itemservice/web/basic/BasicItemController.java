@@ -105,7 +105,7 @@ public class BasicItemController {
 		return "basic/item";
 	}
 
-	@PostMapping("/add")
+	//@PostMapping("/add")
 	public String addItemV3(@ModelAttribute Item item, Model model){
 		// ModelAttribute는 아래 코드(Item 객체를 생성하고 값을 세팅)를 그대로 대신 수행해준다.
 		// Item item = new Item();
@@ -120,6 +120,20 @@ public class BasicItemController {
 		// model.addAttribute("item", item);
 		return "basic/item";
 	}
+
+	/**
+	 * PRG - Post/Redirect/Get
+	 */
+	@PostMapping("/add")
+	public String addItemV4(Item item){
+
+		itemRepository.save(item);
+
+		// PRG - 상품 저장(POST) 후 상품 목록 상세 화면(GET)으로 리다이렉트(Redirect)한다.
+		return "redirect:/basic/items/" + item.getId();
+	}
+
+
 
 	// 상품 수정 폼을 보여주기만 한다.
 	@GetMapping("/{itemId}/edit")
@@ -136,6 +150,7 @@ public class BasicItemController {
 		itemRepository.update(itemId, item);
 
 		// 저장 성공 후에는 리다이렉트(redirect)로 이동
+		// 컨트룰러의 요청 파라미터 값을 @PathVariable으로 매핑했다면(@PathVariable Long itemId), 이 값은 바로 redirect 경로에 사용할 수 있다.
 		return "redirect:/basic/items/{itemId}";
 	}
 }
