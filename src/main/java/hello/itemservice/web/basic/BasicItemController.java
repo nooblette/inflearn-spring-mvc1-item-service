@@ -120,4 +120,22 @@ public class BasicItemController {
 		// model.addAttribute("item", item);
 		return "basic/item";
 	}
+
+	// 상품 수정 폼을 보여주기만 한다.
+	@GetMapping("/{itemId}/edit")
+	public String editForm(@PathVariable("itemId") Long itemId, Model model){
+		Item item = itemRepository.findById(itemId);
+		model.addAttribute("item", item);
+
+		return "basic/editForm";
+	}
+
+	// 같은 URL(/{itemId}/edit)에 대해 HTTP Method로 기능을 구분한다.
+	@PostMapping("/{itemId}/edit")
+	public String edit(@PathVariable("itemId") Long itemId, @ModelAttribute Item item){
+		itemRepository.update(itemId, item);
+
+		// 저장 성공 후에는 리다이렉트(redirect)로 이동
+		return "redirect:/basic/items/{itemId}";
+	}
 }
